@@ -225,6 +225,72 @@ main li {
   min-width: 140px;
 }
 
+/* Emphasized text (bold + red), used for specific call-out phrases */
+.text-emphasis {
+  color: #b3261e;
+  font-weight: 700;
+}
+
+/* Two-column layout: main content + official-links sidebar.
+   Mobile: stacks with the sidebar first, right under the heading, so
+   nobody has to scroll to the bottom of the screen to find it.
+   Wider screens: sidebar moves to the right and stays in view while
+   the content scrolls. */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "sidebar"
+    "content";
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.official-links-sidebar {
+  grid-area: sidebar;
+  background: var(--color-footer-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+}
+
+.official-links-sidebar h2 {
+  margin-top: 0;
+}
+
+.content-column {
+  grid-area: content;
+  min-width: 0; /* keeps long links/URLs from overflowing the column */
+}
+
+@media (min-width: 700px) {
+  .layout-grid {
+    grid-template-columns: 1fr 260px;
+    grid-template-areas: "content sidebar";
+    align-items: start;
+  }
+
+  .official-links-sidebar {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+@media print {
+  .text-emphasis {
+    color: #000;
+  }
+
+  .layout-grid {
+    display: block;
+  }
+
+  .official-links-sidebar {
+    border: 1px solid #000;
+    position: static;
+  }
+}
+
 /* Glossary */
 .glossary {
   margin: 1.5rem 0;
