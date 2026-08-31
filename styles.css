@@ -1,0 +1,318 @@
+/* ==========================================================================
+   Small Claims Self-Help App — shared stylesheet
+   Used by every screen. Mobile-first, high contrast, large default type,
+   with a print stylesheet at the bottom.
+   ========================================================================== */
+
+:root {
+  --color-bg: #ffffff;
+  --color-text: #1a1a1a;
+  --color-primary: #0b4f8a;      /* blue — meets WCAG AA on white */
+  --color-primary-text: #ffffff;
+  --color-border: #1a1a1a;
+  --color-muted: #4d4d4d;
+  --color-focus: #b3261e;        /* high-contrast focus outline, not color-only cue */
+  --color-footer-bg: #f2f2f2;
+
+  --font-base: 18px;
+  --font-scale: 1;               /* changed by .text-large / .text-xlarge on <html> */
+  --max-width: 40rem;
+}
+
+html.text-large   { --font-scale: 1.2; }
+html.text-xlarge  { --font-scale: 1.45; }
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: calc(var(--font-base) * var(--font-scale));
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Skip link — hidden until keyboard-focused */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  padding: 0.75em 1em;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 0.5em;
+  top: 0.5em;
+}
+
+/* Visible focus state everywhere — required, never color-only */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+header.site-header {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.site-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Text-size control (A / A+ / A++) */
+.text-size-control {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.text-size-control button {
+  font-family: inherit;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 2px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.25em 0.6em;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.text-size-control button[aria-pressed="true"] {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+/* Big primary-action buttons (HOME's three routing buttons, etc.) */
+.button-list {
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.button-primary {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  background: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 0.9em 1em;
+  min-height: 44px;
+}
+
+.button-primary:hover,
+.button-primary:focus-visible {
+  background: #08375f;
+  border-color: #08375f;
+}
+
+.button-primary:visited {
+  color: var(--color-primary-text);
+}
+
+/* Secondary text links */
+.secondary-links {
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.secondary-links li {
+  margin-bottom: 0.5em;
+}
+
+.secondary-links a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Content screens: headings, lists, official-links block */
+h2 {
+  font-size: 1.15rem;
+  margin-top: 1.75rem;
+}
+
+main ul,
+main ol {
+  padding-left: 1.4rem;
+}
+
+main li {
+  margin-bottom: 0.6em;
+}
+
+.official-links {
+  margin-top: 1.75rem;
+  padding-top: 0.5rem;
+}
+
+.official-links ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.official-links a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Step navigation: Back / Home / Continue, used on multi-step screens */
+.step-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.step-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.step-nav a.plain-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.button-primary.inline {
+  display: inline-block;
+  padding: 0.6em 1.25em;
+  min-width: 140px;
+}
+
+/* Glossary */
+.glossary {
+  margin: 1.5rem 0;
+}
+
+.glossary-item {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.glossary-item dt {
+  font-weight: 700;
+  margin-bottom: 0.25em;
+}
+
+.glossary-item dd {
+  margin: 0;
+}
+
+/* Help / "Who can help me?" resource list */
+.help-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+}
+
+.help-list li {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0;
+}
+
+.help-list a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+footer.site-footer {
+  background: var(--color-footer-bg);
+  border-top: 1px solid var(--color-border);
+  padding: 1.25rem 1rem;
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+
+footer.site-footer .disclaimer {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-bottom: 0.75em;
+}
+
+footer.site-footer .last-reviewed {
+  margin-top: 0.75em;
+  margin-bottom: 0;
+}
+
+footer.site-footer a {
+  color: var(--color-primary);
+}
+
+/* ==========================================================================
+   Print styles — every screen must print legibly in black and white
+   ========================================================================== */
+@media print {
+  .skip-link,
+  .text-size-control,
+  .step-nav {
+    display: none;
+  }
+
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  .button-primary {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+  }
+
+  footer.site-footer {
+    background: #fff;
+    border-top: 1px solid #000;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+}

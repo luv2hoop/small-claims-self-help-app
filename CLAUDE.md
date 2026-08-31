@@ -16,7 +16,7 @@ This app provides **legal information, never legal advice**. Every piece of text
 ## Content rules
 
 - The persistent disclaimer (see content_outline.md, Global elements) appears in the footer of every screen and every printable view.
-- Only link to official sources: isc.idaho.gov, legislature.idaho.gov, courtselfhelp.idaho.gov (plus the specific resource links listed in the HELP screen of the outline). No third-party legal websites, ever.
+- Only link to official sources: isc.idaho.gov, legislature.idaho.gov, courtselfhelp.idaho.gov, guideandfile.idaho.gov, and idaho.tylerhost.net (Idaho's official eFile & Serve system) — plus the specific resource links listed in the HELP screen of the outline. No third-party legal websites, ever. *(Jeff approved adding guideandfile.idaho.gov and idaho.tylerhost.net on 2026-08-31, since Bailey's content_outline.md cites both directly by URL as official Idaho court tools — P2, P3, and the defendant screens depend on them.)*
 - Reading level: ~6th grade. Address the user as "you." Short sentences.
 - Screens display "Last reviewed: [date]".
 
