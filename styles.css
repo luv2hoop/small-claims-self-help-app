@@ -103,7 +103,7 @@ header.site-header {
 main {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 1.25rem 1rem 2rem;
+  padding: 1.25rem 1.25rem 2rem; /* left/right margin widened 25% (was 1rem) per Jeff's request */
 }
 
 h1 {
