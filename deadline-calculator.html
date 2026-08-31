@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deadline calculator | Small Claims Self-Help Guide</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="site-title">Small Claims Self-Help Guide</p>
+    <div class="text-size-control" role="group" aria-label="Text size">
+      <button type="button" data-size="normal" aria-pressed="true">A</button>
+      <button type="button" data-size="large" aria-pressed="false">A+</button>
+      <button type="button" data-size="xlarge" aria-pressed="false">A++</button>
+    </div>
+    <div class="language-switch">
+      <a href="es/deadline-calculator.html" lang="es" hreflang="es">Espa&ntilde;ol</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <h1>Deadline calculator</h1>
+
+    <p>Pick the kind of deadline, enter the date it starts counting from, and this tool will add up the days for you.</p>
+
+    <div class="calculator-box">
+      <label for="deadline-type">Which deadline?</label>
+      <select id="deadline-type">
+        <option value="answer">Defendant's Answer &mdash; 21 days after being served</option>
+        <option value="appeal">Appeal &mdash; 30 days after the judgment</option>
+        <option value="exemption">Claim of Exemption &mdash; 14 calendar days after collection begins</option>
+        <option value="custom">Other &mdash; I'll enter my own number of days</option>
+      </select>
+
+      <div id="custom-days-row" hidden>
+        <label for="custom-days">Number of days</label>
+        <input type="number" id="custom-days" min="1" step="1" inputmode="numeric">
+      </div>
+
+      <label for="start-date">Starting date</label>
+      <input type="date" id="start-date">
+
+      <p style="margin-top: 1.1rem;">
+        <button type="button" id="calculate-btn" class="button-primary inline">Calculate</button>
+      </p>
+
+      <div class="calculator-result" id="calculator-result" hidden>
+        <p>Deadline: <span class="result-date" id="result-date"></span></p>
+      </div>
+    </div>
+
+    <p class="calculator-caveat">This calculator only counts calendar days from the date you enter. It does not know about court holidays or other rule exceptions, and it is not legal advice. Always confirm your exact deadline with the clerk.</p>
+
+    <h2>About the deadline for serving the defendant</h2>
+    <p>The deadline to serve the defendant and file proof of service is either 30 or 90 days, depending on the court &mdash; Bannock County's exact number hasn't been confirmed for this guide yet. Ask the clerk which applies to your case, then use &ldquo;Other&rdquo; above with the number they give you. See <a href="p4.html">Serving the defendant</a>.</p>
+
+    <h2>About mediation timing</h2>
+    <p>Mediation follows a different kind of rule &mdash; it counts specific Fridays, not a flat number of calendar days &mdash; so it isn't included in this calculator. See <a href="p6.html">Mediation</a> for how that timing works.</p>
+
+    <nav class="step-nav" aria-label="Screen navigation">
+      <div class="step-nav-links">
+        <a class="plain-link" href="index.html">&larr; Back to Home</a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <p class="disclaimer">This is legal information, not legal advice. Even if you follow all instructions, you are not guaranteed a favorable result. For legal advice, talk to a lawyer.</p>
+    <p><a href="help.html">Who can help me?</a> &middot; <a href="about.html">About this guide</a></p>
+    <p class="last-reviewed">Last reviewed: August 2026</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var typeSelect = document.getElementById('deadline-type');
+      var customRow = document.getElementById('custom-days-row');
+      var customInput = document.getElementById('custom-days');
+      var startInput = document.getElementById('start-date');
+      var calcBtn = document.getElementById('calculate-btn');
+      var resultBox = document.getElementById('calculator-result');
+      var resultDate = document.getElementById('result-date');
+
+      var PRESET_DAYS = { answer: 21, appeal: 30, exemption: 14 };
+
+      function updateCustomVisibility() {
+        customRow.hidden = (typeSelect.value !== 'custom');
+      }
+      typeSelect.addEventListener('change', updateCustomVisibility);
+
+      // Allow linking in with a preset, e.g. deadline-calculator.html?type=answer
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var presetType = params.get('type');
+        if (presetType && PRESET_DAYS.hasOwnProperty(presetType)) {
+          typeSelect.value = presetType;
+        }
+      } catch (e) {
+        // URLSearchParams unsupported on a very old browser -- ignore, defaults still work.
+      }
+      updateCustomVisibility();
+
+      calcBtn.addEventListener('click', function () {
+        if (!startInput.value) {
+          resultBox.hidden = false;
+          resultDate.textContent = 'Please enter a starting date first.';
+          return;
+        }
+
+        var days;
+        if (typeSelect.value === 'custom') {
+          days = parseInt(customInput.value, 10);
+          if (!days || days < 1) {
+            resultBox.hidden = false;
+            resultDate.textContent = 'Please enter a number of days.';
+            return;
+          }
+        } else {
+          days = PRESET_DAYS[typeSelect.value];
+        }
+
+        // Parse as a local date (not UTC) so the day doesn't shift by a time zone.
+        var parts = startInput.value.split('-');
+        var start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        start.setDate(start.getDate() + days);
+
+        var formatted = start.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        resultDate.textContent = formatted + ' (' + days + ' days later)';
+        resultBox.hidden = false;
+      });
+    });
+  </script>
+</body>
+</html>

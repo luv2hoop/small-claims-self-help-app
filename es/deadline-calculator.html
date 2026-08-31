@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de plazos | Guía de Autoayuda para Reclamos Menores</title>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido principal</a>
+
+  <header class="site-header">
+    <p class="site-title">Guía de Autoayuda para Reclamos Menores</p>
+    <div class="text-size-control" role="group" aria-label="Tamaño del texto">
+      <button type="button" data-size="normal" aria-pressed="true">A</button>
+      <button type="button" data-size="large" aria-pressed="false">A+</button>
+      <button type="button" data-size="xlarge" aria-pressed="false">A++</button>
+    </div>
+    <div class="language-switch">
+      <a href="../deadline-calculator.html" lang="en" hreflang="en">English</a>
+    </div>
+  </header>
+
+  <main id="main">
+    <h1>Calculadora de plazos</h1>
+
+    <p>Elija el tipo de plazo, ingrese la fecha desde la que empieza a contar, y esta herramienta sumará los días por usted.</p>
+
+    <div class="calculator-box">
+      <label for="deadline-type">&iquest;Cuál plazo?</label>
+      <select id="deadline-type">
+        <option value="answer">Respuesta del demandado (Answer) &mdash; 21 días después de ser notificado</option>
+        <option value="appeal">Apelación (Appeal) &mdash; 30 días después de la sentencia</option>
+        <option value="exemption">Reclamación de Exención (Claim of Exemption) &mdash; 14 días calendario después de que comienza el cobro</option>
+        <option value="custom">Otro &mdash; ingresaré mi propio número de días</option>
+      </select>
+
+      <div id="custom-days-row" hidden>
+        <label for="custom-days">Número de días</label>
+        <input type="number" id="custom-days" min="1" step="1" inputmode="numeric">
+      </div>
+
+      <label for="start-date">Fecha de inicio</label>
+      <input type="date" id="start-date">
+
+      <p style="margin-top: 1.1rem;">
+        <button type="button" id="calculate-btn" class="button-primary inline">Calcular</button>
+      </p>
+
+      <div class="calculator-result" id="calculator-result" hidden>
+        <p>Plazo: <span class="result-date" id="result-date"></span></p>
+      </div>
+    </div>
+
+    <p class="calculator-caveat">Esta calculadora solo cuenta días calendario a partir de la fecha que usted ingrese. No tiene en cuenta los días feriados de la corte ni otras excepciones a las reglas, y no es asesoría legal. Siempre confirme su plazo exacto con el secretario de la corte.</p>
+
+    <h2>Sobre el plazo para notificar al demandado</h2>
+    <p>El plazo para notificar al demandado y presentar la prueba de notificación es de 30 o 90 días, según la corte &mdash; el número exacto para el Condado de Bannock aún no se ha confirmado para esta guía. Pregunte al secretario cuál aplica a su caso, y luego use &ldquo;Otro&rdquo; arriba con el número que le den. Vea <a href="p4.html">Notificar al demandado</a>.</p>
+
+    <h2>Sobre el tiempo de la mediación</h2>
+    <p>La mediación sigue un tipo de regla diferente &mdash; cuenta viernes específicos, no un número fijo de días calendario &mdash; así que no está incluida en esta calculadora. Vea <a href="p6.html">Mediación</a> para saber cómo funciona ese conteo.</p>
+
+    <nav class="step-nav" aria-label="Navegación de pantallas">
+      <div class="step-nav-links">
+        <a class="plain-link" href="index.html">&larr; Volver al inicio</a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="site-footer">
+    <p class="disclaimer">Esto es información legal, no asesoría legal. Aunque siga todas las instrucciones, no se garantiza un resultado favorable. Para asesoría legal, hable con un abogado.</p>
+    <p><a href="help.html">&iquest;Quién puede ayudarme?</a> &middot; <a href="about.html">Acerca de esta guía</a></p>
+    <p class="last-reviewed">Última revisión: agosto de 2026</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var typeSelect = document.getElementById('deadline-type');
+      var customRow = document.getElementById('custom-days-row');
+      var customInput = document.getElementById('custom-days');
+      var startInput = document.getElementById('start-date');
+      var calcBtn = document.getElementById('calculate-btn');
+      var resultBox = document.getElementById('calculator-result');
+      var resultDate = document.getElementById('result-date');
+
+      var PRESET_DAYS = { answer: 21, appeal: 30, exemption: 14 };
+
+      function updateCustomVisibility() {
+        customRow.hidden = (typeSelect.value !== 'custom');
+      }
+      typeSelect.addEventListener('change', updateCustomVisibility);
+
+      // Permite enlazar con un plazo predefinido, por ejemplo deadline-calculator.html?type=answer
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var presetType = params.get('type');
+        if (presetType && PRESET_DAYS.hasOwnProperty(presetType)) {
+          typeSelect.value = presetType;
+        }
+      } catch (e) {
+        // URLSearchParams no compatible en un navegador muy antiguo -- se ignora, los valores por defecto igual funcionan.
+      }
+      updateCustomVisibility();
+
+      calcBtn.addEventListener('click', function () {
+        if (!startInput.value) {
+          resultBox.hidden = false;
+          resultDate.textContent = 'Por favor ingrese primero una fecha de inicio.';
+          return;
+        }
+
+        var days;
+        if (typeSelect.value === 'custom') {
+          days = parseInt(customInput.value, 10);
+          if (!days || days < 1) {
+            resultBox.hidden = false;
+            resultDate.textContent = 'Por favor ingrese un número de días.';
+            return;
+          }
+        } else {
+          days = PRESET_DAYS[typeSelect.value];
+        }
+
+        // Se interpreta como fecha local (no UTC) para que el día no cambie por la zona horaria.
+        var parts = startInput.value.split('-');
+        var start = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        start.setDate(start.getDate() + days);
+
+        var formatted = start.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        resultDate.textContent = formatted + ' (' + days + ' días después)';
+        resultBox.hidden = false;
+      });
+    });
+  </script>
+</body>
+</html>
